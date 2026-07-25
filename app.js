@@ -1,4 +1,4 @@
- 
+
 var APP = (function() {
  
 var TIPO=null, MODO='nuevo', GEN={loc:'m',loc2:'m'}, GARS=[], GC=0, CLO={}, CLE={}, LOCS=[], LC=0, MONEDA='pesos';
@@ -23,9 +23,9 @@ function fL(val){
   return d.getDate()+' de '+MES[d.getMonth()]+' de '+d.getFullYear();
 }
 function fLU(val){
-  if(!val)return 'XX de XXXX de XXXX';
+  if(!val)return 'XXXX de XXXX';
   var d=new Date(val+'T00:00:00');
-  return String(d.getDate()).padStart(2,'0')+' de '+MESU[d.getMonth()]+' de '+d.getFullYear();
+  return MESU[d.getMonth()]+' de '+d.getFullYear();
 }
 function fSl(val){
   if(!val)return 'XX/XX/XXXX';
@@ -404,7 +404,9 @@ function calcV(){
   if(!ini) return;
   var d=new Date(ini+'T00:00:00');
   d.setMonth(d.getMonth()+dur); d.setDate(d.getDate()-1);
-  document.getElementById('fv').value=String(d.getDate()).padStart(2,'0')+' de '+MESU[d.getMonth()]+' de '+d.getFullYear();
+  var NORD2=['','PRIMERO','SEGUNDO','TERCERO','CUARTO','QUINTO','SEXTO','SÉPTIMO','OCTAVO','NOVENO','DÉCIMO','UNDÉCIMO','DUODÉCIMO','DÉCIMO TERCERO','DÉCIMO CUARTO','DÉCIMO QUINTO','DÉCIMO SEXTO','DÉCIMO SÉPTIMO','DÉCIMO OCTAVO','DÉCIMO NOVENO','VIGÉSIMO','VIGÉSIMO PRIMERO','VIGÉSIMO SEGUNDO','VIGÉSIMO TERCERO','VIGÉSIMO CUARTO','VIGÉSIMO QUINTO','VIGÉSIMO SEXTO','VIGÉSIMO SÉPTIMO','VIGÉSIMO OCTAVO','VIGÉSIMO NOVENO','TRIGÉSIMO','TRIGÉSIMO PRIMERO'];
+  var dia2=d.getDate();
+  document.getElementById('fv').value=(NORD2[dia2]||String(dia2))+' ('+String(dia2).padStart(2,'0')+') de '+MESU[d.getMonth()]+' de '+d.getFullYear();
   calcP();
 }
 function calcP(){
@@ -599,6 +601,24 @@ function wCl(num, txt, opts){
   return wP(txt, opts);
 }
  
+ 
+function wParts(parts,opts){
+  // parts = [{t:'text',b:true/false}, ...]
+  opts=opts||{};
+  var sb=opts.sb||60,sa=opts.sa||80,ctr=opts.c||false;
+  var jc=ctr?'<w:jc w:val="center"/>':'<w:jc w:val="both"/>';
+  var sp='<w:spacing w:before="'+sb+'" w:after="'+sa+'" w:line="240" w:lineRule="auto"/>';
+  var runs='';
+  for(var i=0;i<parts.length;i++){
+    var p=parts[i];
+    var rp='<w:rFonts w:ascii="Verdana" w:hAnsi="Verdana"/><w:sz w:val="24"/><w:szCs w:val="24"/>';
+    if(p.b) rp+='<w:b/><w:bCs/>';
+    if(p.col) rp+='<w:color w:val="'+p.col+'"/>';
+    runs+='<w:r><w:rPr>'+rp+'</w:rPr><w:t xml:space="preserve">'+E(String(p.t))+'</w:t></w:r>';
+  }
+  return '<w:p><w:pPr>'+jc+sp+'</w:pPr>'+runs+'</w:p>';
+}
+ 
 function wL(){return '<w:p><w:pPr><w:spacing w:before="120" w:after="120"/><w:pBdr><w:bottom w:val="single" w:sz="4" w:space="1" w:color="000000"/></w:pBdr></w:pPr></w:p>';}
  
 function getInst(){
@@ -700,7 +720,14 @@ async function genWord(){
     c+=wP(cl(),{b:true,sb:200,sa:80});
     c+=wPcl('Queda prohibido al Locatario, ceder el presente contrato, transferir, subarrendar, prestar total o parcialmente la propiedad o hacerse reemplazar por terceros'+(L?'.-':' ( art. 1213 y 1214  CCYC).-'));
     c+=wP(cl(),{b:true,sb:200,sa:80});
-    c+=wPcl('El precio mensual inicial de la locación se establece de común acuerdo entre las partes en la suma de '+(esDolar?'DOLARES ESTADOUNIDENSES':'PESOS')+' '+(esDolar?'':numLetras(alqN)+' ')+'('+simb+v('alq').toLocaleString('es-AR')+'.-) más el Impuesto al Valor Agregado (si correspondiere). El locatario se compromete a pagar el precio contractual con periodicidad mensual, en forma anticipada y durante cada uno de los '+dL+' meses siguientes al inicio de la vigencia del contrato. El precio de alquiler mensual se ajustara en forma trimestral, utilizando el Indice de Precios al Consumidor (IPC) elaborado y públicado mensualmente por el INDEC para los tres (3) meses ante anteriores al mes de reajuste. El Locatario se obliga a satisfacer el precio, regularmente en el domicilio de la Empresa administradora ROBERTS OTERO SERVICIOS INMOBILIARIOS S.A.S, CUIT: 33-71619127-9, calle Rio de Janeiro 1725, Torre 1, oficina 11, Villa Allende'+(L?' Office':'')+', de esta ciudad o en el que con posterioridad se indique, en forma anticipada y del UNO (01) al DIEZ (10) de cada mes, de Lunes a Viernes (excluidos dias feriados) en el horario de 9,00 hs a 14,00 hs. Estos pagos deberán realizarse '+(L?'en dinero en efectivo, transferencia bancaria':'mediante transferencia bancaria a los bancos de los que oportunamente la administración informe el CBU correspondiente')+' o con cheque fecha de cobro al dia de la ciudad de Cordoba, a la orden de ROBERTS OTERO SERVICIOS INMOBILIARIOS S.A.S, quedando convenido que el mero vencimiento del plazo establecido, hará incurrir en mora de pleno derecho al Locatario. El Locatario asume expresamente la obligación de acreditar fehacientemente el depósito o transferencia bancaria que realice dentro del plazo de 24 horas de su ejecucion a fin que la Administradora pueda imputar y rendir el pago al Locador y otorgar el correspondiente recibo de pago al Locatario. La falta de cumplimiento en término con esta obligación hará incurrir al Locatario en mora de pleno derecho y en forma automatica, generando los recargos y multas fijadas en el contrato.-');
+    (function(){
+      var precioTxt=(esDolar?'DÓLARES ESTADOUNIDENSES':'PESOS')+' '+(esDolar?'':numLetras(alqN)+' ')+'('+simb+v('alq').toLocaleString('es-AR')+'.-';
+      c+=wParts([
+        {t:'El precio mensual inicial de la locación se establece de común acuerdo entre las partes en la suma de '},
+        {t:precioTxt,b:true},
+        {t:') más el Impuesto al Valor Agregado (si correspondiere). El locatario se compromete a pagar el precio contractual con periodicidad mensual, en forma anticipada y durante cada uno de los '+dL+' meses siguientes al inicio de la vigencia del contrato. El precio de alquiler mensual se ajustará en forma trimestral, utilizando el Índice de Precios al Consumidor (IPC) elaborado y publicado mensualmente por el INDEC para los tres (3) meses anteriores al mes de reajuste. El Locatario se obliga a satisfacer el precio regularmente en el domicilio de la Empresa administradora ROBERTS OTERO SERVICIOS INMOBILIARIOS S.A.S, CUIT: 33-71619127-9, calle Río de Janeiro 1725, Torre 1, oficina 11, Villa Allende'+(L?' Office':'')+', de esta ciudad o en el que con posterioridad se indique, en forma anticipada y del UNO (01) al DIEZ (10) de cada mes, de Lunes a Viernes (excluidos días feriados) en el horario de 9,00 hs a 14,00 hs. Estos pagos deberán realizarse '+(L?'en dinero en efectivo, transferencia bancaria':'mediante transferencia bancaria a los bancos de los que oportunamente la administración informe el CBU correspondiente')+' o con cheque fecha de cobro al día de la ciudad de Córdoba, a la orden de ROBERTS OTERO SERVICIOS INMOBILIARIOS S.A.S. La falta de cumplimiento en término con esta obligación hará incurrir al Locatario en mora de pleno derecho y en forma automática, generando los recargos y multas fijadas en el contrato.-'}
+      ]);
+    })();
     c+=wP(cl(),{b:true,sb:200,sa:80});
     if(L) c+=wP('El Locatario declara haber visitado y examinado la propiedad, estando conforme en recibir el inmueble en las buenas condiciónes de conservación e higiene en que se encuentra, comprometiendose a mantenerla en buen estado y siendo a su cargo la reparación de todo desperfecto que se ocasione desde la fecha de iniciacion de este contrato, en los servicios de agua, electricidad, gas, '+inst+'. También será responsable de todo dano a la unidad alquilada, por hechos de terceros en su construcción, mamposteria, revoques, pinturas, revestimientos, instalaciónes sanitarias, de gas y eléctricas y sus respectivos artefactos a saber: '+art+'. El Locatario queda obligado al desocupar el inmueble, a hacer entrega de todas las dependencias en el mismo estado en que fue recibido. A los fines de la devolución del inmueble, el Locatario a su exclusivo cargo, se obliga a solicitar a la Administración al menos con TREINTA (30) dias de anticipacion el chequeo y la revisión integral de los mismos por parte de los equipos técnicos de la Administración.');
     else c+=wP('El Locatario declara haber visitado y examinado la propiedad, estando conforme en recibir el inmueble en las buenas condiciónes de conservación e higiene en que se encuentra, contando con un plazo de diez (10) dias habiles desde la firma para notificar por escrito a la empresa administradora de las anomalias que encuentre. Se compromete a mantener el inmueble locado en buen estado, siendo a su cargo la reparación de todo desperfecto que se ocasione desde la fecha de iniciacion de este contrato y producto de su mal uso, en los servicios que se suministren al inmueble como asi también en '+inst+'; como asi también de todo dano a la unidad alquilada por hechos de terceros en su construcción, mamposteria, revoques, pinturas, revestimientos, instalaciónes sanitarias, de gas y eléctricas y sus respectivos artefactos a saber: '+art+'. El Locatario queda obligado al desocupar el inmueble, a hacer entrega de todas las dependencias en el mismo estado en que fue recibido, salvo aquellos deterioros ocasionados por el buen uso moderado del inmueble. A los fines de la devolución del inmueble, el Locatario a su exclusivo cargo, se obliga a solicitar a la Administración al menos con TREINTA (30) dias de anticipacion el chequeo y la revisión integral de los mismos por parte de los equipos técnicos de la Administración.-');
@@ -738,7 +765,20 @@ async function genWord(){
     }
     var nG=GARS.length;
     garTxt+='; '+(nG>1?'suscriben':'suscribe')+' este contrato como Fiador'+(nG>1?'es':'')+' y Garante'+(nG>1?'s':'')+', solidario'+(nG>1?'s':'')+', liso'+(nG>1?'s':'')+', llano'+(nG>1?'s':'')+' y principal'+(nG>1?'es':'')+' pagador'+(nG>1?'es':'')+' de todas y cada una de las obligaciónes emergentes del presente contrato haciendo expresa renuncia a los beneficios de division y excusion que pudieran corresponderle, por el incumplimiento de todas y cada una de las obligaciónes contraidas por el Locatario en el presente contrato; garantizando igualmente el pago de los honorarios y gastos de juicios que se promovieren contra el Locatario, por cobro de alquileres, desalojo, posesion judicial, danos y perjuicios, desperfectos, etc.- La Fianza y demas cláusulas subsistiran aun vencido el término contractual y hasta tanto el Locatario restituya al Locador la unidad que se alquila y entregue los comprobantes de pago de los servicios: EPEC, ECOGAS y expensas comúnes. En caso de que los Fiadores dispusiesen o gravaren el bien de su propiedad ofrecido en garantia del presente contrato, o que de cualquier forma disminuyesen su solvencia patrimonial, será obligatorio el reemplazo o refuerzo de la garantia. Los Fiadores quedan obligados a informar al Locador si venden, transfieren, gravan o de algun modo disminuyen el valor de la propiedad que declaran poseer y en base a la cual el Locador los ha aceptado como garantia del presente.-';
-    c+=wP(garTxt);
+    (function(){
+      // Build garante paragraph with bold names
+      var garParts=[];
+      for(var gii=0;gii<GARS.length;gii++){
+        var giid=GARS[gii].id; var gGG=gT(giid);
+        if(gii>0) garParts.push({t:' y '});
+        garParts.push({t:gGG.el+'/La '+gGG.sr+'/a. '});
+        garParts.push({t:(v(giid+'-n')||'XXXXXXXXXXX'),b:true});
+        garParts.push({t:', DNI '+(v(giid+'-d')||'XXXXXX')+', '+(GARS[gii].gen==='m'?'argentino':'argentina')+', mayor de edad, '+gGG.nacido+' el '+fL(v(giid+'-fn'))+', con domicilio en '+(v(giid+'-dom')||'XXXXXXXXXX')+', barrio '+(v(giid+'-barrio')||'XXXXXXXX')+', ciudad de '+(v(giid+'-ciudad')||'XXXXXXXX')+', '+gTxt(giid)});
+      }
+      var nGG=GARS.length;
+      garParts.push({t:'; '+(nGG>1?'suscriben':'suscribe')+' este contrato como Fiador'+(nGG>1?'es':'')+' y Garante'+(nGG>1?'s':'')+', solidario'+(nGG>1?'s':'')+', liso'+(nGG>1?'s':'')+', llano'+(nGG>1?'s':'')+' y principal'+(nGG>1?'es':'')+' pagador'+(nGG>1?'es':'')+' de todas y cada una de las obligaciones emergentes del presente contrato haciendo expresa renuncia a los beneficios de división y excusión que pudieran corresponderle, por el incumplimiento de todas y cada una de las obligaciones contraídas por el Locatario en el presente contrato; garantizando igualmente el pago de los honorarios y gastos de juicios que se promovieren contra el Locatario, por cobro de alquileres, desalojo, posesión judicial, daños y perjuicios, desperfectos, etc.- La Fianza y demás cláusulas subsistirán aún vencido el término contractual y hasta tanto el Locatario restituya al Locador la unidad que se alquila y entregue los comprobantes de pago de los servicios: EPEC, ECOGAS y expensas comunes. En caso de que los Fiadores dispusiesen o gravaren el bien de su propiedad ofrecido en garantía del presente contrato, o que de cualquier forma disminuyesen su solvencia patrimonial, será obligatorio el reemplazo o refuerzo de la garantía. Los Fiadores quedan obligados a informar al Locador si venden, transfieren, gravan o de algún modo disminuyen el valor de la propiedad que declaran poseer y en base a la cual el Locador los ha aceptado como garantía del presente.-'});
+      c+=wParts(garParts);
+    })();
     var tieneInm=false;
     for(var ti=0;ti<GARS.length;ti++){var vt=v(GARS[ti].id+'-tipo')||'inmueble';if(vt==='inmueble'||vt==='ambos'){tieneInm=true;break;}}
     var colC=tieneInm?null:'FF0000';
@@ -860,4 +900,3 @@ return {
 };
  
 })();
- 
