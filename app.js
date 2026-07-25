@@ -1,14 +1,14 @@
-
+ 
 var APP = (function() {
-
+ 
 var TIPO=null, MODO='nuevo', GEN={loc:'m',loc2:'m'}, GARS=[], GC=0, CLO={}, CLE={}, LOCS=[], LC=0, MONEDA='pesos';
 var MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 var MESU=MES.map(function(m){return m.toUpperCase();});
 var OBL=['dir','barrio','ciudad','dgr','loc-n','loc-d','loc2-n','loc2-d','fi','alq'];
-
+ 
 function v(id){var e=document.getElementById(id);return e?e.value.trim():'';}
 function hdn(id,hide){var e=document.getElementById(id);if(e)e.classList.toggle('hdn',hide);}
-
+ 
 function E(s){
   var r=String(s||'');
   r=r.split('&').join('&amp;');
@@ -16,7 +16,7 @@ function E(s){
   r=r.split('>').join('&gt;');
   return r;
 }
-
+ 
 function fL(val){
   if(!val)return 'XX de XXXX de XXXX';
   var d=new Date(val+'T00:00:00');
@@ -43,7 +43,7 @@ function fFirma(val){
   var mes=MES[d.getMonth()]; mes=mes.charAt(0).toUpperCase()+mes.slice(1);
   return (NORD[dia]||String(dia))+' ('+String(dia).padStart(2,'0')+') días del mes de '+mes+' del año '+d.getFullYear();
 }
-
+ 
 function gT(pref){
   var gen;
   if(pref==='loc') gen=GEN.loc;
@@ -56,7 +56,7 @@ function gT(pref){
   if(gen==='m') return {sr:'Sr',el:'el',nac:'argentino',nacido:'nacido'};
   return {sr:'Sra',el:'la',nac:'argentina',nacido:'nacida'};
 }
-
+ 
 function showPg(id,btn){
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
   document.getElementById('pg-'+id).classList.add('on');
@@ -65,7 +65,7 @@ function showPg(id,btn){
   if(btn) btn.classList.add('on');
   if(id==='hs') renderH();
 }
-
+ 
 function setModo(m){
   MODO=m;
   var r=(m==='renov');
@@ -83,7 +83,7 @@ function setModo(m){
     });
   }
 }
-
+ 
 function selT(btn){
   document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
@@ -99,7 +99,7 @@ function selT(btn){
   if(GARS.length===0) addG();
   initClauseEditor();
 }
-
+ 
 function setG(pref,btn){
   btn.closest('.gbtn').querySelectorAll('.gb').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
@@ -116,21 +116,21 @@ function setG(pref,btn){
     var ne=document.getElementById(pref+'-nac'); if(ne) ne.value=(gen==='m'?'argentino':'argentina');
   }
 }
-
-
+ 
+ 
 function addLoc(){
   LC++; var id='loc'+LC;
   LOCS.push({id:id,gen:'m'});
   renderLocs();
 }
-
+ 
 function remLoc(id){
   var nl=[];
   for(var i=0;i<LOCS.length;i++){if(LOCS[i].id!==id) nl.push(LOCS[i]);}
   LOCS=nl;
   renderLocs();
 }
-
+ 
 function renderLocs(){
   var cont=document.getElementById('locs-cont');
   if(!cont) return;
@@ -171,7 +171,7 @@ function renderLocs(){
     })(LOCS[i],i);
   }
 }
-
+ 
 function locsExtra(){
   if(LOCS.length===0) return '';
   var txt='';
@@ -181,11 +181,11 @@ function locsExtra(){
   }
   return txt;
 }
-
-
+ 
+ 
 // ─── EDITOR DE CLAUSULAS ──────────────────────────────────
 var CLAUSE_EDITS = {}; // stores user edits per clause name
-
+ 
 function initClauseEditor(){
   var cont = document.getElementById('ed-cls-cont');
   if(!cont) return;
@@ -230,7 +230,7 @@ function initClauseEditor(){
     })(NUMS[i]);
   }
 }
-
+ 
 function toggleECl(key){
   var b = document.getElementById('ecl-body-'+key);
   var badge = document.getElementById('ecl-badge-'+key);
@@ -238,7 +238,7 @@ function toggleECl(key){
   b.style.display = open ? 'none' : 'block';
   if(badge) badge.textContent = badge.textContent.replace(open?'▲':'▼', open?'▼':'▲');
 }
-
+ 
 function onEClChange(nom){
   var key = nom.replace(/\s/g,'_');
   var ta = document.getElementById('ecl-ta-'+key);
@@ -249,39 +249,39 @@ function onEClChange(nom){
   var badge = document.getElementById('ecl-badge-'+key);
   if(badge) badge.textContent = t ? '✏️ Modificada ▲' : 'Sin cambios ▲';
 }
-
+ 
 function getClauseEdit(nom){
   return CLAUSE_EDITS[nom] || null;
 }
-
+ 
 function addG(){
   GC++; var id='g'+GC;
   GARS.push({id:id,gen:'m'});
   renderGars();
 }
-
+ 
 function remG(id){
   var newGars=[];
   for(var i=0;i<GARS.length;i++){if(GARS[i].id!==id) newGars.push(GARS[i]);}
   GARS=newGars;
   renderGars();
 }
-
+ 
 function renderGars(){
   var cont=document.getElementById('gar-cont');
   if(!cont) return;
   while(cont.firstChild) cont.removeChild(cont.firstChild);
-
+ 
   for(var i=0;i<GARS.length;i++){
     var gar=GARS[i]; var id=gar.id; var num=i+1;
     var blq=document.createElement('div');
     blq.className='gb-blq';
-
+ 
     var tit=document.createElement('div');
     tit.className='gb-tit';
     tit.textContent='Garante '+num;
     blq.appendChild(tit);
-
+ 
     if(GARS.length>1){
       var remBtn=document.createElement('button');
       remBtn.className='btn btnd';
@@ -290,7 +290,7 @@ function renderGars(){
       (function(gid){remBtn.onclick=function(){APP.remG(gid);};})(id);
       blq.appendChild(remBtn);
     }
-
+ 
     // Row 1: genero, nombre, dni, fecha
     var r1=document.createElement('div'); r1.className='g4'; r1.style.marginBottom='8px';
     r1.innerHTML=
@@ -302,7 +302,7 @@ function renderGars(){
       '<div class="f"><label>DNI</label><input id="'+id+'-d" type="text"></div>'+
       '<div class="f"><label>Fecha nacimiento</label><input id="'+id+'-fn" type="date"></div>';
     blq.appendChild(r1);
-
+ 
     // Row 2: dom, barrio, ciudad
     var r2=document.createElement('div'); r2.className='g3'; r2.style.marginBottom='8px';
     r2.innerHTML=
@@ -310,7 +310,7 @@ function renderGars(){
       '<div class="f"><label>Barrio</label><input id="'+id+'-barrio" type="text"></div>'+
       '<div class="f"><label>Ciudad/Provincia</label><input id="'+id+'-ciudad" type="text"></div>';
     blq.appendChild(r2);
-
+ 
     // Row 3: tipo garantia
     var r3=document.createElement('div'); r3.className='g2'; r3.style.marginBottom='8px';
     r3.innerHTML=
@@ -322,13 +322,13 @@ function renderGars(){
       '</select></div>'+
       '<div class="f" id="'+id+'-mf"><label>Matrícula N</label><input id="'+id+'-mat" type="text" placeholder="Ej: 123456"></div>';
     blq.appendChild(r3);
-
+ 
     // Row 4: descripción inmueble
     var r4=document.createElement('div'); r4.className='f'; r4.style.marginBottom='8px';
     r4.id=id+'-df';
     r4.innerHTML='<label>Descripcion del inmueble (encabezado matrícula)</label><input id="'+id+'-desc" type="text" placeholder="Casa sita en calle...">';
     blq.appendChild(r4);
-
+ 
     // Row 5: haberes (hidden)
     var r5=document.createElement('div'); r5.className='g2 hdn'; r5.style.marginBottom='8px';
     r5.id=id+'-hf';
@@ -336,25 +336,25 @@ function renderGars(){
       '<div class="f"><label>Organismo</label><input id="'+id+'-org" type="text" placeholder="Ej: ANSES"></div>'+
       '<div class="f"><label>CUIT organismo</label><input id="'+id+'-cuit" type="text"></div>';
     blq.appendChild(r5);
-
+ 
     // Row 6: conyuge
     var r6=document.createElement('div'); r6.className='g2';
     r6.innerHTML=
       '<div class="f"><label>Conyuge (si casado/a)</label><input id="'+id+'-cony" type="text" placeholder="Dejar vacio si no aplica"></div>'+
       '<div class="f"><label>DNI conyuge</label><input id="'+id+'-conyd" type="text"></div>';
     blq.appendChild(r6);
-
+ 
     cont.appendChild(blq);
   }
 }
-
+ 
 function onTG(id){
   var vt=v(id+'-tipo');
   hdn(id+'-mf',vt==='haberes');
   hdn(id+'-df',vt==='haberes');
   hdn(id+'-hf',vt==='inmueble');
 }
-
+ 
 function gTxt(id){
   var vt=v(id+'-tipo')||'inmueble';
   var mat=v(id+'-mat')||'XXXXXX';
@@ -365,7 +365,7 @@ function gTxt(id){
   if(vt==='haberes') return 'presenta como garantia sus haberes otorgados por '+org+', CUIT:'+cui;
   return 'presenta como garantia su propiedad inscripta a la Matrícula '+mat+' Capital (XX) descripto como: '+desc+', y sus haberes otorgados por '+org+', CUIT:'+cui;
 }
-
+ 
 function togCb(lbl){
   setTimeout(function(){
     var cb=lbl.querySelector('input[type=checkbox]');
@@ -387,8 +387,8 @@ function updBaja(){
     ?'Los servicios deberán ser <strong>dados de baja</strong> y abonados hasta la fecha de entrega, entregando los comprobantes en el domicilio de la administradora.'
     :'Los servicios deberán ser abonados y <strong>NO dados de baja</strong>, entregando los comprobantes originales en el domicilio de la administradora.';
 }
-
-
+ 
+ 
 function setMoneda(btn){
   btn.closest('.gbtn').querySelectorAll('.gb').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
@@ -398,7 +398,7 @@ function setMoneda(btn){
   if(alqEl) alqEl.placeholder = MONEDA==='dolares' ? 'Ej: 1500' : 'Ej: 500000';
   calcP();
 }
-
+ 
 function calcV(){
   var ini=v('fi'); var dur=parseInt(v('dur')||'24');
   if(!ini) return;
@@ -419,7 +419,7 @@ function calcP(){
   dp.setMonth(dp.getMonth()+1);
   document.getElementById('pag-v').value=fSl(dp.toISOString().substring(0,10));
 }
-
+ 
 function chg(){
   if(!TIPO) return;
   var n=0;
@@ -435,7 +435,7 @@ function chg(){
   document.getElementById('plbl').textContent=ok?'Todo completo!':'Completa los campos obligatorios (*)';
   calcP();
 }
-
+ 
 function limpiar(){
   if(!confirm('Limpiar todos los datos?')) return;
   var inputs=document.querySelectorAll('#fb input,#fb select,#fb textarea');
@@ -455,7 +455,7 @@ function limpiar(){
   renderLocs(); renderGars(); addG();
   chg();
 }
-
+ 
 // ─── RENOVACION ───────────────────────────────────────────
 async function procAnt(){
   var fi=document.getElementById('f-ant');
@@ -479,7 +479,7 @@ async function procAnt(){
   } else {
     st.textContent='Subi un .docx o pega el texto.'; st.style.color='var(--or)'; return;
   }
-
+ 
   var datos=extrDatos(txt);
   var campos=['loc-n','loc-d','loc2-n','loc2-d','dir','barrio','ciudad','dgr','catastro','san','alq','fi'];
   var n=0;
@@ -492,7 +492,7 @@ async function procAnt(){
   }
   if(datos.dur){var de=document.getElementById('dur');if(de) de.value=datos.dur;}
   calcV(); chg();
-
+ 
   if(datos._cls){
     var keys=Object.keys(datos._cls);
     if(keys.length>0){
@@ -504,7 +504,7 @@ async function procAnt(){
   st.innerHTML='OK. Pre-llenados: <strong>'+n+'</strong>'+(nc?' | Cláusulas: <strong>'+nc+'</strong>':'')+'. Revisa los campos amarillos.';
   st.style.color='var(--vd)';
 }
-
+ 
 function extrDatos(t){
   var d={};
   var re=/(?:Sr|Sra)[./]+\s*([A-ZÁÉÍÓÚÑ][a-záéíóúñA-ZÁÉÍÓÚÑ\s]+?),\s*DNI[:\s]+([\d.]+)/g;
@@ -533,7 +533,7 @@ function extrDatos(t){
   }
   d._cls=cls; return d;
 }
-
+ 
 function renderCls(){
   var lst=document.getElementById('lst-cls');
   while(lst.firstChild) lst.removeChild(lst.firstChild);
@@ -578,7 +578,7 @@ function getCambios(){
   for(var n in CLE){if(CLE[n]!==CLO[n]) r[n]=CLE[n];}
   return r;
 }
-
+ 
 // ─── WORD ─────────────────────────────────────────────────
 function wP(txt,opts){
   opts=opts||{};
@@ -591,16 +591,16 @@ function wP(txt,opts){
   if(hi) rp+='<w:highlight w:val="yellow"/>';
   return '<w:p><w:pPr>'+jc+sp+'</w:pPr><w:r><w:rPr>'+rp+'</w:rPr><w:t xml:space="preserve">'+E(String(txt))+'</w:t></w:r></w:p>';
 }
-
+ 
 function wCl(num, txt, opts){
   // Check if user has edited this clause
   var edit = getClauseEdit(num.replace(':',''));
   if(edit) txt = edit;
   return wP(txt, opts);
 }
-
+ 
 function wL(){return '<w:p><w:pPr><w:spacing w:before="120" w:after="120"/><w:pBdr><w:bottom w:val="single" w:sz="4" w:space="1" w:color="000000"/></w:pBdr></w:pPr></w:p>';}
-
+ 
 function getInst(){
   var mp={cloacas:'cloacas',camara:'camara septica',pozo:'pozo negro',revoques:'revoques',pinturas:'pinturas',zocalos:'zocalos',vidrios:'vidrios',cerraduras:'cerraduras',llaves:'llaves',puertas:'puertas',ventanas:'ventanas',caldera:'caldera de calefacción',radiadores:'radiadores',calefactores:'calefactores',aire:'equipos de aire acondiciónado',calefón:'calefón',termotanque:'termo tanque',piscina:'equipo de mantenimiento de piscina'};
   var r=[];
@@ -613,8 +613,8 @@ function getRest(){
   document.querySelectorAll('input[value^="r-"]').forEach(function(cb){if(cb.checked&&mp[cb.value]) r.push(mp[cb.value]);});
   return r.length?r.join(', '):'los equipos existentes';
 }
-
-
+ 
+ 
 function numLetras(n){
   if(!n||n<=0) return 'XXXXXXXXXX';
   var millones=Math.floor(n/1000000);
@@ -655,7 +655,7 @@ function numLetras(n){
   }
   return res.trim();
 }
-
+ 
 async function genWord(){
   try {
     var T=TIPO, L=T==='local', D=(T==='depto'||T==='estrenar'), SE=T==='estrenar', C=T==='country';
@@ -689,14 +689,14 @@ async function genWord(){
     c+=wP('CONTRATO DE LOCACION',{b:true,c:true,sb:160,sa:200});
     c+=wL();
     c+=wP(lG.el+'/la '+lG.sr+'/Sra. '+v('loc-n')+', DNI:'+v('loc-d')+', '+v('loc-nac')+', mayor de edad, '+lG.nacido+' el '+fL(v('loc-fn'))+', por una parte y en adelante también llamado "El Locador", y por la otra '+l2G.el+'/la '+l2G.sr+'/Sra. '+v('loc2-n')+', DNI: '+v('loc2-d')+', '+v('loc2-nac')+', mayor de edad, '+l2G.nacido+' el '+fL(v('loc2-fn'))+locsExtra()+' en adelante también llamada "El Locatario", se ha convenido en celebrar el siguiente contrato de locación de inmueble que se regira por las siguientes cláusulas:');
-
+ 
     c+=wP(cl(),{b:true,sb:200,sa:80});
     if(SE) c+=wP('El Locador, cede en locación al Locatario y este acepta, el bien inmueble de su propiedad que se describe como: Un departamento sito en calle '+v('dir')+', Barrio '+v('barrio')+', de la ciudad de '+v('ciudad')+', provincia de Cordoba y cuya identificación de la DGR es '+v('dgr')+'. La descripción del inmueble y su equipamiento se encuentra detallada en el anexo 1- acta de inventario, que forma parte integrante de este contrato'+coch+'. El departamento es "a estrenar", y se encuentra en perfecto estado de conservación e higiene, que el Locatario declara conocer y aceptar, corriendo exclusivamente a partir de la fecha el mantenimiento, limpieza y/o reparación de todas las instalaciónes por exclusiva cuenta del Locatario. Esta locación se pacta por el término de '+dL+' meses a contar del dia PRIMERO (01) de '+fLU(v('fi'))+', venciendo en consecuencia el dia '+v('fv')+', para ser destinado a vivienda exclusivamente, no pudiendo el locatario darle otro destino.-');
     else if(L) c+=wP('El Locador, cede en locación al Locatario y este acepta, el bien inmueble de su propiedad que se describe como un Local comercial/oficina'+(v('sup')?' de '+v('sup')+' m2,':'')+(v('sup')?'':',')+' sito en calle '+v('dir')+', Barrio '+v('barrio')+', de la ciudad de '+v('ciudad')+', provincia de Cordoba y cuya identificación de la DGR es '+v('dgr')+'. Esta locación se pacta por el término de '+dL+' meses a contar del dia PRIMERO (01) de '+fLU(v('fi'))+', venciendo en consecuencia el dia '+v('fv')+', para ser destinado a uso comercial exclusivamente, no pudiendo el locatario darle otro destino.-');
     else if(C) c+=wP('El Locador, cede en locación al Locatario y este acepta, el bien inmueble de su propiedad que se describe como: Una casa sita en calle '+v('dir')+', Barrio residencial '+v('barrio')+', de la ciudad de '+v('ciudad')+', provincia de Cordoba y cuya identificación de la DGR es '+v('dgr')+'. Esta locación se pacta por el término de '+dL+' meses a contar del dia PRIMERO (01) de '+fLU(v('fi'))+', venciendo en consecuencia el dia '+v('fv')+', para ser destinado a vivienda exclusivamente, no pudiendo el locatario darle otro destino.-');
     else if(D) c+=wP('El Locador, cede en locación al Locatario y este acepta, el bien inmueble de su propiedad que se describe como: Un departamento sito en calle '+v('dir')+', Barrio '+v('barrio')+', de la ciudad de '+v('ciudad')+', provincia de Cordoba y cuya identificación de la DGR es '+v('dgr')+'. Esta locación se pacta por el término de '+dL+' meses a contar del dia PRIMERO (01) de '+fLU(v('fi'))+', venciendo en consecuencia el dia '+v('fv')+', para ser destinado a vivienda exclusivamente, no pudiendo el locatario darle otro destino.-');
     else c+=wP('El Locador, cede en locación al Locatario y este acepta, el bien inmueble de su propiedad que se describe como: Una casa, sita en calle '+v('dir')+', Barrio '+v('barrio')+', de la ciudad de '+v('ciudad')+', provincia de Cordoba y cuya identificación de la DGR es '+v('dgr')+'. Esta locación se pacta por el término de '+dL+' meses a contar del dia PRIMERO (01) de '+fLU(v('fi'))+', venciendo en consecuencia el dia '+v('fv')+', para ser destinado a vivienda exclusivamente, no pudiendo el locatario darle otro destino.-');
-
+ 
     c+=wP(cl(),{b:true,sb:200,sa:80});
     c+=wPcl('Queda prohibido al Locatario, ceder el presente contrato, transferir, subarrendar, prestar total o parcialmente la propiedad o hacerse reemplazar por terceros'+(L?'.-':' ( art. 1213 y 1214  CCYC).-'));
     c+=wP(cl(),{b:true,sb:200,sa:80});
@@ -755,7 +755,7 @@ async function genWord(){
     c+=wP(cl(),{b:true,sb:200,sa:80});
     c+=wPcl('El Locatario y los Fiadores RENUNCIAN expresamente al derecho de recusar sin causa al Tribunal en caso de iniciarse contra los mismos o contra cualquiera de ellos, acciones judiciales que tengan por base el inmueble objeto del presente contrato, como asi también renuncian expresamente a la limitacion acordada por el Art. 730 del C.C.yC. en relación a las costas judiciales que estuvieran o pudieran estar a su cargo.-');
     c+=wP(cl(),{b:true,sb:200,sa:80});
-    c+=wPcl('El Locatario se compromete a reintegrar el inmueble recien pintado al latex blanco en sus muros y techos, tanto interiores como exteriores (si correspondiere). La mano de obra será a eleccion del Locador.-');
+    c+=wPcl('El Locatario se compromete a reintegrar el inmueble recién pintado al látex blanco en sus muros y techos, tanto interiores como exteriores (si correspondiere). La mano de obra será a elección del Locador. Las partes acuerdan que durante todo el período en que el Locatario tenga la tenencia del inmueble locado y hasta la recepción definitiva del mismo por parte de la Locadora y/o su representante, ésta queda eximida de cualquier tipo de responsabilidad contractual o extracontractual por daños de cualquier especie que sufran personas y/o cosas en el inmueble locado y/o sus dependencias.-');
     c+=wP(cl(),{b:true,sb:200,sa:80});
     c+=wPcl('Los contratantes manifiestan que es voluntad de las partes mantener el valor locativo del inmueble en términos lógicos y equiparables a unidades similares. Razon por la cual, si la inflacion desbordara los precios convenidos en el presente contrato, Locador y Locatario se comprometen a encontrar un mecanismo compensatorio que evite que una parte se beneficie en forma ostentosa respecto de la otra. Para el caso de que surjan nuevas normas que permitan la actualización de los alquileres, las partes convienen de común acuerdo que procederá a su utilización en el presente contrato.-');
     c+=wP(cl(),{b:true,sb:200,sa:80});
@@ -808,7 +808,7 @@ async function genWord(){
     alert('Error al generar: '+err.message);
   }
 }
-
+ 
 // ─── HISTORIAL ────────────────────────────────────────────
 function savH(){
   var h=JSON.parse(localStorage.getItem('roh')||'[]');
@@ -844,11 +844,11 @@ function updHC(){
   var e=document.getElementById('hcnt');
   e.textContent=h.length||''; e.style.display=h.length?'inline':'none';
 }
-
+ 
 // ─── INIT ─────────────────────────────────────────────────
 updHC();
 addG();
-
+ 
 return {
   showPg:showPg, setModo:setModo, selT:selT, setG:setG,
   addG:addG, remG:remG, onTG:onTG, togCb:togCb, togAll:togAll,
@@ -858,5 +858,5 @@ return {
   addLoc:addLoc, remLoc:remLoc,
   initClauseEditor:initClauseEditor, setMoneda:setMoneda
 };
-
+ 
 })();
